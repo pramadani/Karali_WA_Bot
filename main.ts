@@ -1,27 +1,31 @@
-import { Client, LocalAuth, Message } from "whatsapp-web.js";
+import { setClient } from "./Init/client";
+import { Mongoose } from "mongoose";
+import { setDB } from "./Init/db";
 import qrcode from "qrcode-terminal";
+import { Message } from "whatsapp-web.js";
+import { handle_message } from "./Handlers/message";
+import dotenv from 'dotenv';
 
-const client: Client = new Client({
-    authStrategy: new LocalAuth()
-});
+dotenv.config();
+const MONGODB_URL: string = process.env.MONGODB_URL!;
+const BROWSER: string = process.env.BROWSER!;
+const FFMPEG: string = process.env.FFMPEG!;
 
-client.on("qr", (qr: string) => {
-    qrcode.generate(qr, { small: true });
-});
+async function init(): Promise<void> {
+    const db: Mongoose = await setDB(MONGODB_URL);
+    const client = await setClient(db, BROWSER, FFMPEG);
 
-client.on("ready", (): void => {
-    console.log("Client Ready!");
-    console.log(client.info.wid.user)
-});
+    client.on("ready", (): void => {
+        console.log(`bot ready with id: ${client.info.wid.user}`);
+    });
 
-client.on("message", (message: Message) => {
-    console.log(`Pesan diterima: ${message.body}`);
+    client.on("qr", (qr): void => {
+        qrcode.generate(qr, { small: true });
+    });
 
-    if (message.body.toLowerCase() === "halo") {
-        message.reply("Halo juga!");
-    }
-});
+    client.on("message", (message: Message): void => {
+        handle_message(message);
+    });
+}
 
-client.initialize();
-
-export { client }
+init();
