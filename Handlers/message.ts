@@ -7,7 +7,7 @@ const prefix: string = ".";
 const commandList: Commands = getCommandList();
 
 function doAtCommand(message: Message): void {
-    const parts: string[] = message.body.split(" ");
+    const parts: string[] = message.body.toLowerCase().split(" ");
     const command: string[] = parts.filter(part => part.includes('@'));
 
     if (command.includes("a")) {
