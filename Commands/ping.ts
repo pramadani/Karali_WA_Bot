@@ -3,6 +3,6 @@ import { italic, quote } from "../Library/text_style";
 
 export function ping(message: Message): void {
     const replyMessage: string = quote(italic('bot aktif.'));
-    
+    console.log(message)
     message.reply(replyMessage);
 }

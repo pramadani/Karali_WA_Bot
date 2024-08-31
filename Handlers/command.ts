@@ -8,7 +8,7 @@ export interface Commands {
 }
 
 const commands: Commands = {
-    "ping": (message: Message): void => {
+    "ping": (message: Message) => {
         ping(message);
     },
 };

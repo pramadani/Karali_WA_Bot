@@ -6,7 +6,7 @@ const prefix: string = ".";
 
 const commandList: Commands = getCommandList();
 
-function doAtCommand(message: Message): void {
+function doAtCommand(message: Message) {
     const parts: string[] = message.body.toLowerCase().split(" ");
     const command: string[] = parts.filter(part => part.includes('@'));
 
@@ -15,7 +15,7 @@ function doAtCommand(message: Message): void {
     }
 }
 
-function doDotCommand(message: Message): void {
+function doDotCommand(message: Message) {
     const parts: string[] = message.body.split(" ");
     const command: string = parts[0].slice(1).toLowerCase();
 
@@ -24,14 +24,14 @@ function doDotCommand(message: Message): void {
     }
 }
 
-export function handle_message(message: Message): void {
-    if (message.body.includes(mention)) {
-        doAtCommand(message);
-        return;
-    }
-
+export function handle_message(message: Message) {
     if (message.body.startsWith(prefix)) {
         doDotCommand(message);
+        return;
+    }
+    
+    if (message.body.includes(mention)) {
+        doAtCommand(message);
         return;
     }
 }
