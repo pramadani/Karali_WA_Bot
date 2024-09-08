@@ -4,7 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "ts-node main.ts"
+    "start": "ts-node src/index.ts",
+    "dev": "npm install && npm start"
   },
   "keywords": [],
   "author": "",
@@ -16,10 +17,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "mongoose": "^8.5.3",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.25.0",
-    "wwebjs-mongo": "^1.1.0"
+    "whatsapp-web.js": "^1.25.0"
   }
 }

@@ -2,11 +2,9 @@ import { setClient } from "./Init/client";
 import qrcode from "qrcode-terminal";
 import { Client, Message } from "whatsapp-web.js";
 import { handle_message } from "./Handlers/message";
-import dotenv from 'dotenv';
 
-dotenv.config();
-const BROWSER: string = process.env.BROWSER!;
-const FFMPEG: string = process.env.FFMPEG!;
+const BROWSER: string = "/usr/bin/google-chrome-stable";
+const FFMPEG: string = "/usr/bin/ffmpeg";
 
 async function init() {
     const client: Client = await setClient(BROWSER, FFMPEG);
@@ -21,12 +19,7 @@ async function init() {
 
     client.on("message", (message: Message) => {
         handle_message(message);
-    });
-
-    client.on('remote_session_saved', () => {
-        console.log("session saved")
-    });
-    
+    });    
 }
 
 init();
