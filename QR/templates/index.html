@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Listener</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
+</head>
+<body>
+    <h1>WWEBJS Auth</h1>
+    <p id="qr_data">Menunggu QR...</p>
+    <canvas id="qrcode"></canvas>
+
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('qr', function(data) {
+            console.log("QR data received:", data.qr_data);
+            document.getElementById('qr_data').textContent = data.qr_data;
+
+            var qr = new QRious({
+                element: document.getElementById('qrcode'),
+                value: data.qr_data,
+                size: 400
+            });
+        });
+    </script>
+</body>
+</html>
