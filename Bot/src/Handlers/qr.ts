@@ -1,20 +1,17 @@
 import axios from 'axios';
-import qrcode from "qrcode-terminal";
+import qrcode from 'qrcode-terminal';
 
-const qr_path: string = "http://qr:5000/qr"
+const QR_PATH = 'http://qr:5000/qr';
 
-export async function handle_qr(qr: string) {
+export async function handleQr(qr: string): Promise<void> {
     qrcode.generate(qr, { small: true });
 
-    const data = {
-        qr_data: qr
-    };
+    const data = { qr_data: qr };
 
-    axios.post(qr_path, data)
-        .then(() => { 
-            console.log('QR dikirim'); 
-        })
-        .catch(() => {
-            console.error('Gagal mengirim QR');
-        });
+    try {
+        await axios.post(QR_PATH, data);
+        console.log('QR dikirim');
+    } catch (error) {
+        console.error('Gagal mengirim QR', error);
+    }
 }

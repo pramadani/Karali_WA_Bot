@@ -1,25 +1,21 @@
-import { setClient } from "./Init/client";
-import { Client, Message } from "whatsapp-web.js";
-import { handle_message } from "./Handlers/message";
-import { handle_qr } from "./Handlers/qr";
+import { setClient } from './Init/client';
+import { Client, Message } from 'whatsapp-web.js';
+import { handleMessage } from './Handlers/message';
+import { handleQr } from './Handlers/qr';
 
-const BROWSER: string = "/usr/bin/google-chrome-stable";
-const FFMPEG: string = "/usr/bin/ffmpeg";
+const BROWSER_PATH = '/usr/bin/google-chrome-stable';
+const FFMPEG_PATH = '/usr/bin/ffmpeg';
 
-async function init() {
-    const client: Client = await setClient(BROWSER, FFMPEG);
+async function init(): Promise<void> {
+    const client = await setClient(BROWSER_PATH, FFMPEG_PATH);
 
-    client.on("ready", () => {
-        console.log(`bot ready with id: ${client.info.wid.user}`);
+    client.on('ready', () => {
+        console.log(`Bot ready with ID: ${client.info.wid.user}`);
     });
 
-    client.on("qr", (qr) => {
-        handle_qr(qr)
-    });
+    client.on('qr', handleQr);
 
-    client.on("message", (message: Message) => {
-        handle_message(message);
-    });    
+    client.on('message', handleMessage);
 }
 
 init();

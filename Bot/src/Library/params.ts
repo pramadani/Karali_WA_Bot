@@ -1,18 +1,13 @@
-const params: string = ".."
+const PARAMS_SEPARATOR = '..';
 
 export function isIncludeParams(message: string): boolean {
-    if (message.includes(params)) {
-        return true
-    }
-    else {
-        return false
-    }
+    return message.includes(PARAMS_SEPARATOR);
 }
 
 export function getParams(message: string): string[] {
     return message
-        .split(params)
+        .split(PARAMS_SEPARATOR)
         .slice(1)
         .filter(Boolean)
-        .map(param => param.trim())
+        .map(param => param.trim());
 }

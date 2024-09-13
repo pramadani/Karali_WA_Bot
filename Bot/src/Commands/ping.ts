@@ -1,7 +1,7 @@
 import { Message } from "whatsapp-web.js";
 import { italic, quote } from "../Library/text_style";
 
-export function ping(message: Message): void {
-    const replyMessage: string = quote(italic('bot aktif.'));
-    message.reply(replyMessage);
+export async function ping(msg: Message) {
+    const replyMessage = quote(italic('bot aktif.'));
+    msg.reply(replyMessage);
 }
