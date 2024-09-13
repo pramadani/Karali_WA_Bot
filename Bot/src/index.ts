@@ -1,5 +1,4 @@
 import { setClient } from './Init/client';
-import { Client, Message } from 'whatsapp-web.js';
 import { handleMessage } from './Handlers/message';
 import { handleQr } from './Handlers/qr';
 

@@ -25,6 +25,7 @@ function handleDotCommand(message: Message) {
 }
 
 export function handleMessage(message: Message) {
+
     if (message.body.startsWith(PREFIX)) {
         handleDotCommand(message);
         return;
