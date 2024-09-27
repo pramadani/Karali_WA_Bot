@@ -83,10 +83,11 @@ export class StickerCommand {
         this.stickerName = params.length > 0 ? params[0] : '';
     }
 
-    private async sendSticker(): Promise<void> {
+    private async sendSticker() {
         this.setStickerName();
         this.chat = await this.msg.getChat();
-        await this.chat.sendMessage(this.media!, {
+
+        this.chat.sendMessage(this.media!, {
             stickerName: this.stickerName,
             sendMediaAsSticker: true,
         });

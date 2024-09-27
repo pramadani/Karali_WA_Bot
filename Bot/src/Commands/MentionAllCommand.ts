@@ -42,7 +42,7 @@ export class MentionAllCommand {
         );
     }
 
-    private async mentionGroupChat(): Promise<void> {
+    private async mentionGroupChat() {
         const userId = this.msg.author!.replace("@c.us", "");
         const client: Client = Bot.clientInstance;
 
@@ -57,7 +57,7 @@ export class MentionAllCommand {
         }
 
         if (mentions.length > 1) {
-            await this.groupChat!.sendMessage(text, { mentions });
+            this.groupChat!.sendMessage(text, { mentions });
         }
     }
 }

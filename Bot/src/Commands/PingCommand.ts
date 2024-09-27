@@ -9,10 +9,11 @@ export class PingCommand {
         this.exec();
     }
 
-    public async exec(): Promise<void> {
+    public async exec() {
         const replyMessage = FormatMessage.quote(
             FormatMessage.italic('bot aktif.')
         );
-        await this.msg.reply(replyMessage);
+        
+        this.msg.reply(replyMessage);
     }
 }
