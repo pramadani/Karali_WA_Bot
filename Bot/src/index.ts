@@ -1,20 +1,7 @@
-import { setClient } from './Init/client';
-import { handleMessage } from './Handlers/message';
-import { handleQr } from './Handlers/qr';
+import { Bot } from './Bot/Bot';
 
-const BROWSER_PATH = '/usr/bin/google-chrome-stable';
-const FFMPEG_PATH = '/usr/bin/ffmpeg';
-
-async function init(): Promise<void> {
-    const client = await setClient(BROWSER_PATH, FFMPEG_PATH);
-
-    client.on('ready', () => {
-        console.log(`Bot ready with ID: ${client.info.wid.user}`);
-    });
-
-    client.on('qr', handleQr);
-
-    client.on('message', handleMessage);
+async function startBot() {
+    await Bot.initializeClient();
 }
 
-init();
+startBot();
