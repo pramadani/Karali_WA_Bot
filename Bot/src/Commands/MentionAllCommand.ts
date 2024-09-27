@@ -1,45 +1,14 @@
 import { Chat, Client, GroupChat, Message } from "whatsapp-web.js";
 import { Bot } from "../Bot/Bot";
 import { FormatMessage } from "../Bot/FormatMessage";
+import { Command } from "./Command";
 
-export class MentionAllCommand {
-    private msg: Message;
-    private chat: Chat | undefined;
-    private groupChat: GroupChat | undefined;
-
-    constructor(msg: Message) {
-        this.msg = msg;
-        this.exec();
-    }
-
+export class MentionAllCommand extends Command{
+    
     public async exec(): Promise<void> {
-        await this.initializeChat();
-
-        if (!this.isGroupChat()) {
-            await this.replyChatError();
-            return
-        } 
-        
+        await this.getChat();
+        if (!await this.checkIsGroupChat()) return;
         await this.mentionGroupChat();
-    }
-
-    private async initializeChat(): Promise<void> {
-        this.chat = await this.msg.getChat();
-        if (this.chat.isGroup) {
-            this.groupChat = this.chat as GroupChat;
-        }
-    }
-
-    private isGroupChat(): boolean {
-        return this.groupChat !== undefined;
-    }
-
-    private async replyChatError(): Promise<void> {
-        await this.msg.reply(
-            FormatMessage.quote(
-                FormatMessage.italic('Error. Command ini hanya bisa digunakan di dalam grup.')
-            )
-        );
     }
 
     private async mentionGroupChat() {
