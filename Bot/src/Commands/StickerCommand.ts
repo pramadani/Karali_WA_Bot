@@ -1,7 +1,4 @@
-import { Chat, Message, MessageMedia } from "whatsapp-web.js";
-import { FormatMessage } from "../Bot/FormatMessage";
 import { ParamParser } from "../Bot/ParamParser";
-import { MessageCache } from "../MessageCache/MessageCache";
 import { Command } from "./Command";
 
 export class StickerCommand extends Command {

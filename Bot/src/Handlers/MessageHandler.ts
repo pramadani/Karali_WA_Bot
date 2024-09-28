@@ -20,7 +20,7 @@ export class MessageHandler {
     }
 
     private handleDotCommand(message: Message): void {
-        const parts = message.body.split(" ");
+        const parts = message.body.trim().split(" ");
         const command = parts[0].slice(1).toLowerCase();
 
         const commandList = this.commandManager.commandList;
@@ -30,7 +30,7 @@ export class MessageHandler {
     }
 
     public handleMessage(message: Message): void {
-        if (message.body.startsWith(this.prefix)) {
+        if (message.body.trim().startsWith(this.prefix)) {
             this.handleDotCommand(message);
         } else if (message.body.includes(this.mention)) {
             this.handleAtCommand(message);

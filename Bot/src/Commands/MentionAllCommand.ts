@@ -1,10 +1,10 @@
-import { Chat, Client, GroupChat, Message } from "whatsapp-web.js";
+import { Client } from "whatsapp-web.js";
 import { Bot } from "../Bot/Bot";
 import { FormatMessage } from "../Bot/FormatMessage";
 import { Command } from "./Command";
 
 export class MentionAllCommand extends Command{
-    
+
     public async exec(): Promise<void> {
         await this.getChat();
         if (!await this.checkIsGroupChat()) return;

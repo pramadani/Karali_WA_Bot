@@ -1,5 +1,5 @@
 export interface EditedMessage {
-    newBody: string;
-    prevBody: string;
-    time: string;
+    messageId: string,
+    prevBody: string,
+    time: string,
 }

@@ -8,18 +8,51 @@ services:
       - wwebjs_auth:/app/.wwebjs_auth
       - wwebjs_cache:/app/.wwebjs_cache
     command: npm run dev
-    restart: always
 
   qr:
     build: 
       context: ./QR
     ports:
-      - "5000:5000"
+      - "5001:5000"
     volumes:
       - ./QR:/app
     command: flask run --host=0.0.0.0
+
+  mention:
+    build: 
+      context: ./Mention
+    volumes:
+      - ./Mention:/app
+      - node_modules_mention:/app/node_modules
+    ports:
+      - "5000:5000"
+    command: npm run dev
+    depends_on:
+      - mentiondb
+
+  mentiondb:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mention
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - mention_db:/var/lib/mysql
+
+  mentiondbgui:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mentiondb
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8081:80"
+    depends_on:
+      - mentiondb
 
 volumes:
   node_modules:
   wwebjs_auth:
   wwebjs_cache:
+  mention_db:
+  node_modules_mention:

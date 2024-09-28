@@ -1,4 +1,6 @@
 export interface DeletedMessage {
-    messageBody: string;
-    time: string;
+    groupId: string,
+    author: string,
+    messageBody: string,
+    time: string,
 }
