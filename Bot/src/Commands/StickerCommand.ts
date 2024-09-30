@@ -1,10 +1,10 @@
-import { ParamParser } from "../Bot/ParamParser";
 import { Command } from "./Command";
 
 export class StickerCommand extends Command {
     private stickerName: string = '';
 
     public async exec() {
+        await this.getChat()
         if (!await this.checkHasMedia()) return;
         if (!await this.canDownloadMedia()) return;
         if (!await this.validateMediaFormat(["image", "video"])) return;
@@ -12,16 +12,10 @@ export class StickerCommand extends Command {
         await this.sendSticker();
     }
 
-    private setStickerName() {
-        const params = ParamParser.isIncludeParams(this.msg.body) ? ParamParser.getParams(this.msg.body) : [];
-        this.stickerName = params.length > 0 ? params[0] : '';
-    }
-
     private async sendSticker() {
-        this.setStickerName();
-        this.chat = await this.msg.getChat();
+        this.stickerName = this.params.length > 0 ? this.params[0] : '';
 
-        this.chat.sendMessage(this.media!, {
+        this.chat!.sendMessage(this.media!, {
             stickerName: this.stickerName,
             sendMediaAsSticker: true,
         });

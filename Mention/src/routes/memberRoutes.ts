@@ -1,55 +1,36 @@
 import express from 'express';
 import { Member } from '../models/Member';
+import { Group } from '../models/Group';
+import { Mention } from '../models/Mention';
 
 const router = express.Router();
 
-router.post('/create/:mention_id', async (req, res) => {
-    const { mention_id } = req.params;
-    const data = req.body;
-
-    const newMember = await Member.create({ phone_number: data.phone_number, mention_id: Number(mention_id) });
-    res.status(201).send({
-        message: 'Member added to mention',
-        member: {
-            id: newMember.id,
-            phone_number: newMember.phone_number,
-        },
-    });
+router.post('/create/:group_name/:mention_name/:phone_number', async (req, res) => {
+    const { group_name, mention_name, phone_number } = req.params;
+    const group = await Group.findOne({ where: { name: group_name } });
+    const mention = await Mention.findOne({ where: { name: mention_name, group_id: group!.id } });
+    const existingMember = await Member.findOne({ where: { phone_number, mention_id: mention!.id } });
+    if (existingMember) { res.status(200).send('Member already exists in this mention'); return }
+    await Member.create({ phone_number, mention_id: mention!.id });
+    res.status(201).send('Member added to mention');
 });
 
-router.get('/all/:mention_id', async (req, res) => {
-    const { mention_id } = req.params;
-    const members = await Member.findAll({ where: { mention_id: Number(mention_id) } });
-
-    const result = members.map(member => ({
-        id: member.id,
-        phone_number: member.phone_number,
-    }));
-
-    res.send(result);
+router.get('/all/:group_name/:mention_name', async (req, res) => {
+    const { group_name, mention_name } = req.params;
+    const group = await Group.findOne({ where: { name: group_name } });
+    const mention = await Mention.findOne({ where: { name: mention_name, group_id: group!.id } });
+    const members = await Member.findAll({ where: { mention_id: mention!.id } });
+    const phoneNumbers = members.map(member => member.phone_number);
+    res.send(phoneNumbers);
 });
 
-router.get('/id/:phone_number', async (req, res) => {
-    const { phone_number } = req.params;
-    const member = await Member.findOne({ where: { phone_number } });
-
-    if (member) {
-        res.status(200).send({ id: member.id });
-    } else {
-        res.status(404).send({ message: 'Member not found' });
-    }
-});
-
-router.delete('/remove/:member_id', async (req, res) => {
-    const { member_id } = req.params;
-    const member = await Member.findByPk(member_id);
-
-    if (member) {
-        await member.destroy();
-        res.send({ message: 'Member deleted successfully' });
-    } else {
-        res.status(404).send({ message: 'Member not found' });
-    }
+router.delete('/remove/:group_name/:mention_name/:phone_number', async (req, res) => {
+    const { group_name, mention_name, phone_number } = req.params;
+    const group = await Group.findOne({ where: { name: group_name } });
+    const mention = await Mention.findOne({ where: { name: mention_name, group_id: group!.id } });
+    const member = await Member.findOne({ where: { phone_number: phone_number, mention_id: mention!.id } });
+    await member!.destroy();
+    res.send('Member deleted successfully');
 });
 
 export default router;

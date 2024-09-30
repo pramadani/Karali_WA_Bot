@@ -3,21 +3,18 @@ import { Group } from '../models/Group';
 
 const router = express.Router();
 
-router.get('/id/:name', async (req, res) => {
+router.post('/create/:name', async (req, res) => {
     const { name } = req.params;
-    const group = await Group.findOne({ where: { name } });
-
-    if (group) {
-        res.status(200).json({ id: group.id });
-    }
-
-    const groupId = await createGroup(name);
-    res.status(201).json({ id: groupId });
+    const existingGroup = await Group.findOne({ where: { name } });
+    if (existingGroup) { res.status(200).send("Group already exists"); return }
+    await Group.create({ name });
+    res.status(201).send("Group Created");
 });
 
-async function createGroup(name: string) {
-    const newGroup = await Group.create({ name });
-    return newGroup.id;
-}
+router.get('/all', async (req, res) => {
+    const groups = await Group.findAll();
+    const groupNames = groups.map(group => group.name);
+    res.send(groupNames);
+});
 
 export default router;

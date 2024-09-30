@@ -1,6 +1,6 @@
 import { Message } from "whatsapp-web.js";
 import { CommandManager } from "./CommandManager";
-import { MentionAllCommand } from "../Commands/MentionAllCommand";
+import { MentionAllCommand } from "../Commands/Mention/MentionAllCommand";
 
 export class MessageHandler {
     private commandManager = new CommandManager();
@@ -8,8 +8,13 @@ export class MessageHandler {
     private prefix: string = ".";
 
     private handleAtCommand(message: Message): void {
-        const parts = message.body.toLowerCase().split(" ");
-        const atCommands = parts.filter(part => part.includes(this.mention)).map(part => part.substring(1));
+        const parts = message.body
+            .toLowerCase()
+            .replace(/\n/g, " ")
+            .replace(/\r/g, " ")
+            .trim()
+            .split(" ");
+        const atCommands = parts.filter(part => part.startsWith(this.mention)).map(part => part.substring(1));
 
         const containA = atCommands.find(command => command === "a");
 
@@ -20,7 +25,11 @@ export class MessageHandler {
     }
 
     private handleDotCommand(message: Message): void {
-        const parts = message.body.trim().split(" ");
+        const parts = message.body
+            .replace(/\n/g, " ")
+            .replace(/\r/g, " ")
+            .trim()
+            .split(" ");
         const command = parts[0].slice(1).toLowerCase();
 
         const commandList = this.commandManager.commandList;
