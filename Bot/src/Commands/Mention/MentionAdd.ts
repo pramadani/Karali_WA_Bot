@@ -1,81 +1,57 @@
-import { Command } from "../Command";
-import { FormatMessage } from "../../Bot/FormatMessage";
-import { mentionSystem } from "./Models";
-import { Group } from "./Models/Group";
 import { Member } from "./Models/Member";
 import { MentionDb } from "./Models/MentionDb";
+import { MentionCommand } from "./MentionCommand";
+import { Format } from "../../Bot/Format";
 
-export class MentionAddCommand extends Command {
+export class MentionAddCommand extends MentionCommand {
 
-    public async exec(): Promise<void> {
-        await this.getChat();
-        if (!await this.checkIsGroupChat()) return;
-        if (!await this.checkIsAdmin) return;
+    protected async do(): Promise<void> {
+        if (!await this.checkIsAdmin()) return;
+        if (!await this.checkHasAnyParam()) return;
+        if (!await this.checkHasTag()) return;
         await this.addMember();
     }
 
-    private async getGroup() {
-        if (!mentionSystem.isGroupExists(this.msg.from)) {
-            mentionSystem.addGroup(new Group(this.msg.from))
-        }
-        const group = mentionSystem.getGroup(this.msg.from);
-        return group
-    }
-
     private async addMember() {
-        if (!this.params[0]) {
-            await this.notifyReply('Error. Berikan param mention terlebih dahulu.');
-            return
-        }
-        if (this.msg.mentionedIds.length === 0 && !this.checkHasSelfTag()) {
-            await this.notifyReply('Error. Berikan tag pada orang yang ingin dimasukkan ke dalam mention.');
-            return
-        }
+
+        const mentionName = Format
+        .removeWhiteSpace(this.params[0])
+        .split(' ')[0]
+        .toLowerCase()
         
-        const group = await this.getGroup();
-        const name = this.params[0]
-            .replace(/\n/g, " ")
-            .replace(/\r/g, " ")
-            .trim()
-            .split(' ')[0]
-        
-        if (!group?.isMentionExists(name)) {
+        if (!this.group?.isMentionExists(mentionName)) {
             await this.notifyReply('Error. Nama mention belum ada.');
             return
         }
 
-        const mention = group?.getMention(name)
+        const mention = this.group.getMention(mentionName)
 
         if (this.checkHasSelfTag()) {
-            const memberExists = mention?.isMemberExists(this.msg.author!);
+            const memberExists = mention!.isMemberExists(this.message.author!);
             if (!memberExists) {
-                const member = new Member(this.msg.author!);
-                mention?.addMember(member);
+                const member = new Member(this.message.author!);
+                mention!.addMember(member);
                 const mentionDb = new MentionDb()
-                mentionDb.groupName = group.name;
-                mentionDb.mentionName = mention?.name;
+                mentionDb.groupName = this.group.name;
+                mentionDb.mentionName = mention!.name;
                 mentionDb.memberId = member.id;
                 mentionDb.save();
             }
         }
 
-        for (const mentionedId of this.msg.mentionedIds) {
-            const memberExists = mention?.isMemberExists(String(mentionedId));
+        for (const mentionedId of this.message.mentionedIds) {
+            const memberExists = mention!.isMemberExists(String(mentionedId));
             if (!memberExists) {
                 const member = new Member(String(mentionedId));
-                mention?.addMember(member);
+                mention!.addMember(member);
                 const mentionDb = new MentionDb()
-                mentionDb.groupName = group.name;
+                mentionDb.groupName = this.group.name;
                 mentionDb.mentionName = mention?.name;
                 mentionDb.memberId = member.id;
                 mentionDb.save();
             }
         }
 
-        await this.msg.reply(
-            FormatMessage.quote(
-                FormatMessage.italic(`Member ditambahkan.`)
-            )
-        );
+        await this.notifyReply("Member ditambahkan.");
     }
 }

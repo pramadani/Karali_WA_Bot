@@ -3,31 +3,33 @@ import { EditedMessage } from './EditedMessage';
 import { Media } from './Media';
 
 export class MessageCache {
-    private static deletedMessageCache: DeletedMessage[] = [];
-    private static editedMessageCache: EditedMessage[] = [];
-    private static mediaCache: Media[] = [];
+    private deletedMessageCache: DeletedMessage[] = [];
+    private editedMessageCache: EditedMessage[] = [];
+    private mediaCache: Media[] = [];
 
-    public static get deletedMessages(): DeletedMessage[] {
+    public get deletedMessages(): DeletedMessage[] {
         return this.deletedMessageCache;
     }
 
-    public static addDeletedMessage(message: DeletedMessage): void {
+    public addDeletedMessage(message: DeletedMessage): void {
         this.deletedMessageCache.push(message);
     }
 
-    public static get editedMessages(): EditedMessage[] {
+    public get editedMessages(): EditedMessage[] {
         return this.editedMessageCache;
     }
 
-    public static addEditedMessage(message: EditedMessage): void {
+    public addEditedMessage(message: EditedMessage): void {
         this.editedMessageCache.push(message);
     }
 
-    public static get mediaMessages(): Media[] {
+    public get mediaMessages(): Media[] {
         return this.mediaCache;
     }
 
-    public static addMediaMessage(media: Media): void {
+    public addMediaMessage(media: Media): void {
         this.mediaCache.push(media);
     }
 }
+
+export const messageCache = new MessageCache();

@@ -1,58 +1,33 @@
-import axios from "axios";
-import { Command } from "../Command";
-import { FormatMessage } from "../../Bot/FormatMessage";
-import { mentionSystem } from "./Models";
-import { Group } from "./Models/Group";
-import { Member } from "./Models/Member";
+import { Format } from "../../Bot/Format";
+import { MentionCommand } from "./MentionCommand";
 import { Mention } from "./Models/Mention";
 import { MentionDb } from "./Models/MentionDb";
 
+export class MentionCreateCommand extends MentionCommand {
 
-export class MentionCreateCommand extends Command {
-
-    public async exec(): Promise<void> {
-        await this.getChat();
-        if (!await this.checkIsGroupChat()) return;
+    protected async do(): Promise<void> {
         if (!await this.checkIsAdmin()) return;
+        if (!await this.checkHasAnyParam()) return;
         await this.mentionCreate();
     }
 
-    private async getGroup() {
-        if (!mentionSystem.isGroupExists(this.msg.from)) {
-            const group = new Group(this.msg.from);
-            mentionSystem.addGroup(group)
-            const mentionDb = new MentionDb()
-            mentionDb.groupName = group?.name;
-            await mentionDb.save()
-        }
-        const group = mentionSystem.getGroup(this.msg.from);
-        return group
-    }
-
     private async mentionCreate() {
-        if (!this.params[0]) {
-            await this.notifyReply('Error. Berikan nama mention terlebih dahulu.');
-            return
-        }
+        const name = Format
+        .removeWhiteSpace(this.params[0])
+        .split(' ')[0]
+        .toLowerCase()
         
-        const group = await this.getGroup();
-        const name = this.params[0]
-            .replace(/\n/g, " ")
-            .replace(/\r/g, " ")
-            .trim()
-            .split(' ')[0]
-        
-        if (group?.isMentionExists(name)) {
+        if (this.group!.isMentionExists(name)) {
             await this.notifyReply("Error. nama mention sudah ada")
             return
         }
 
         const mention = new Mention(name);
-        group?.addMention(mention)
+        this.group!.addMention(mention)
 
         const mentionDb = new MentionDb()
-        mentionDb.groupName = group?.name;
-        mentionDb.mentionName = mention?.name;
+        mentionDb.groupName = this.group!.name;
+        mentionDb.mentionName = mention.name;
         mentionDb.save();
 
         await this.notifyReply("Mention ditambahkan.")

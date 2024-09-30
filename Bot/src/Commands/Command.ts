@@ -1,92 +1,65 @@
 import { Chat, Message, MessageMedia, GroupChat } from "whatsapp-web.js";
 import { FormatMessage } from "../Bot/FormatMessage";
-import { MessageCache } from "../MessageCache/MessageCache";
-import { ParamParser } from "../Bot/ParamParser";
-import { Bot } from "../Bot/Bot";
+import { messageCache } from "../MessageCache/MessageCache";
+import { Format } from "../Bot/Format";
 
 export abstract class Command {
-    protected msg: Message;
+    protected message: Message;
     protected chat: Chat | undefined;
     protected media: MessageMedia | undefined;
     protected groupChat: GroupChat | undefined;
-    protected listMedia = MessageCache.mediaMessages;
+    protected listMedia = messageCache.mediaMessages;
     protected params: string[] = [];
+    protected selfTag: string = "@me"
 
     constructor(msg: Message) {
-        this.msg = msg;
-        this.params = ParamParser.isIncludeParams(this.msg.body.trim()) ? ParamParser.getParams(this.msg.body.trim()) : [];
+        this.message = msg;
+        this.params = Format.isIncludeParams(this.message.body) ? Format.getParams(this.message.body) : [];
         this.exec();
     }
 
     public abstract exec(): Promise<void> 
 
     protected async getChat(): Promise<void> {
-        this.chat = await this.msg.getChat();
+        this.chat = await this.message.getChat();
     }
 
     protected async checkIsGroupChat(): Promise<boolean> {
-        if (this.chat && this.chat.isGroup) {
+        if (!this.chat) await this.getChat();
+        if (this.chat!.isGroup) {
             this.groupChat = this.chat as GroupChat;
             return true;
         } 
-
-        await this.msg.reply(
-            FormatMessage.quote(
-                FormatMessage.italic('Error. Command ini hanya bisa digunakan di dalam grup.')
-            )
-        );
+        await this.notifyReply('Error. Command ini hanya bisa digunakan di dalam grup.');
         return false;
     }
 
     protected async checkIsAdmin(): Promise<boolean> {
-        const authorId = this.msg.author;
-    
+        const authorId = this.message.author;
         const isAdmin = this.groupChat!.participants.some(participant => 
             participant.id._serialized === authorId && participant.isAdmin
         );
-    
-        if (!isAdmin) {
-            await this.msg.reply(
-                FormatMessage.quote(
-                    FormatMessage.italic('Error. Command ini hanya bisa digunakan oleh admin grup.')
-                )
-            );
-        }
-    
+        if (!isAdmin) await this.notifyReply('Error. Command ini hanya bisa digunakan oleh admin grup.');
         return isAdmin;
     }
-    
 
     protected async checkHasMedia(): Promise<boolean> {
-        if (!this.msg.hasMedia) {
-            await this.msg.reply(
-                FormatMessage.quote(
-                    FormatMessage.italic('Error. tidak ada attachment media.')
-                )
-            );
-            return false;
+        if (!this.message.hasMedia) {
+            await this.notifyReply('Error. Tidak ada attachment media.');
         }
-
-        return true;
+        return this.message.hasMedia;
     }
 
     protected async canDownloadMedia(): Promise<boolean> {
-        this.media = this.listMedia.find(item => item.key === this.msg.mediaKey)?.media;
-
+        this.media = this.listMedia.find(item => item.key === this.message.mediaKey)?.media;
         if (!this.media) {
-            this.media = await this.msg.downloadMedia();
-
+            this.media = await this.message.downloadMedia();
             if (this.media?.mimetype.includes("video")) {
-                MessageCache.addMediaMessage({ key: this.msg.mediaKey!, media: this.media });
+                messageCache.addMediaMessage({ key: this.message.mediaKey!, media: this.media });
             }
         }
-
         if (!this.media) {
-            await this.msg.reply(
-                FormatMessage.quote(
-                    FormatMessage.italic('Error. library bug.')
-                )
-            );
+            await this.notifyReply('Error. library bug.');
             return false;
         }
         return true;
@@ -95,41 +68,47 @@ export abstract class Command {
     protected async validateMediaFormat(validFormats: string[]): Promise<boolean> {
         const isFormatValid = validFormats.some(type => this.media!.mimetype.includes(type));
         if (!isFormatValid) {
-            await this.msg.reply(
-                FormatMessage.quote(
-                    FormatMessage.italic('Error. format media tidak sesuai.')
-                )
-            );
-            return false;
+            await this.notifyReply('Error. format media tidak sesuai.');
         }
-        return true;
+        return isFormatValid;
     }
 
     protected checkHasSelfTag() {
-        const hasSelfTag = this.msg.body
-            .replace(/\n/g, " ")
-            .replace(/\r/g, " ")
-            .trim()
-            .split(" ")
-            .map(word => word.trim())
-            .includes('@me');
-        return hasSelfTag;
+        return Format
+        .removeWhiteSpace(this.message.body)
+        .split(" ")
+        .includes(this.selfTag);
     }
 
     protected async notifyReply(text: string) {
-        await this.msg.reply(
-            FormatMessage.quote(
-                FormatMessage.italic(text)
-            )
-        );
+        await this.message.reply(this.notifyFormat(text));
     }
 
-    protected async notify(chatId: string, text: string) {
-        await Bot.clientInstance.sendMessage(
-            chatId,
-            FormatMessage.quote(
-                FormatMessage.italic(text)
-            )
-        );
+    protected notifyFormat(text: string) {
+        return FormatMessage.quote(FormatMessage.italic(text))
+    }
+
+    protected async checkHasTag() {
+        if (this.message.mentionedIds.length === 0 && !this.checkHasSelfTag()) {
+            await this.notifyReply('Error. Tidak terdapat tag user.');
+            return false
+        }
+        return true
+    }
+
+    protected async checkHasAnyParam() {
+        if (!this.params || this.params.length === 0) {
+            await this.notifyReply('Error. Tidak terdapat parameter tambahan.');
+            return false
+        }
+        return true
+    }
+    
+    protected async checkHasSpecificParam(index: number) {
+        if (!this.params[index]) {
+            await this.notifyReply(`Error. Tidak terdapat parameter ke-${index+1}.`);
+            return false
+        }
+        return true
     }
 }

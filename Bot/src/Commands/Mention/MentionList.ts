@@ -1,54 +1,31 @@
 import { FormatMessage } from "../../Bot/FormatMessage";
-import { Command } from "../Command";
-import { mentionSystem } from "./Models";
-import { Group } from "./Models/Group";
+import { MentionCommand } from "./MentionCommand";
 
+export class MentionListCommand extends MentionCommand {
 
-export class MentionListCommand extends Command {
-
-    public async exec(): Promise<void> {
-        await this.getChat();
-        if (!await this.checkIsGroupChat()) return;
+    protected async do(): Promise<void> {
         await this.mentionList();
     }
 
-    private async getGroup() {
-        if (!mentionSystem.isGroupExists(this.msg.from)) {
-            mentionSystem.addGroup(new Group(this.msg.from))
-        }
-        const group = mentionSystem.getGroup(this.msg.from);
-        return group
-    }
-
     private async mentionList() {
-        const group = await this.getGroup();
+        const mentions = this.group!.getMentions();
 
-        const mentions = group?.getMentions();
-
-        if (!mentions) {
+        if (mentions.length === 0) {
             await this.notifyReply("Belum ada mention ditambahkan.")
             return
         }
 
-        let text = "";
-
-        for (const mention of mentions!) {
-            text += `${FormatMessage.bold(mention.name)}\n`;
-
-            const members = mention.getMembers();
-            if (members && members.length > 0) {
-                const memberNames = members.map(member => {
-                    return FormatMessage.italic(
-                        member.id.replace("@c.us", '')
-                    );
-                }).join("\n");
-                text += `${memberNames}\n`;
-            } else {
-                text += "-\n";
-            }
-        }
-
-        await this.notifyReply("Berikut list mention terdaftar.");
+        let text = mentions
+        .map(mention => {
+            const memberNames = mention.getMembers()
+                .map(member => FormatMessage.italic(member.id.replace("@c.us", '')))
+                .join("\n");
+    
+            return `${FormatMessage.bold(mention.name)}\n${memberNames || '-'}`;
+        })
+        .join("\n\n");
+    
+        await this.notifyReply("List mention terdaftar.");
         await this.chat?.sendMessage(text.trim());
     }
 

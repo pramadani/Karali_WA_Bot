@@ -28,3 +28,5 @@ export class MentionSystem {
         return this.groups.some(group => group.name === name);
     }
 }
+
+export const mentionSystem = new MentionSystem();
