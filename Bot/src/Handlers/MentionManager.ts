@@ -1,7 +1,7 @@
 import { Message } from "whatsapp-web.js";
 import { Format } from "../Bot/Format";
-import { MentionAllCommand } from "./Mention/MentionAllCommand";
-import { Mention } from "./Mention";
+import { MentionAllCommand } from "../Commands/Mention/MentionAllCommand";
+import { Mention } from "../Commands/Mention";
 
 export class MentionManager {
 

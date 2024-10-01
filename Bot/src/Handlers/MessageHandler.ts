@@ -1,8 +1,8 @@
 import { Message } from "whatsapp-web.js";
-import { CommandManager } from "../Commands/CommandManager";
+import { CommandManager } from "./CommandManager";
 import { MentionAllCommand } from "../Commands/Mention/MentionAllCommand";
 import { Format } from "../Bot/Format";
-import { MentionManager } from "../Commands/MentionManager";
+import { MentionManager } from "./MentionManager";
 
 export class MessageHandler {
     private commandManager = new CommandManager();

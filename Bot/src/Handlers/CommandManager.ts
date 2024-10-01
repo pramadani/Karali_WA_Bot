@@ -1,10 +1,10 @@
 import { Message } from "whatsapp-web.js";
-import { PingCommand } from "./PingCommand";
-import { StickerCommand } from "./StickerCommand";
-import { MentionAllCommand } from "./Mention/MentionAllCommand";
-import { MentionListCommand } from "./Mention/MentionList";
-import { MentionCreateCommand } from "./Mention/MentionCreate";
-import { MentionAddCommand } from "./Mention/MentionAdd";
+import { PingCommand } from "../Commands/PingCommand";
+import { StickerCommand } from "../Commands/StickerCommand";
+import { MentionAllCommand } from "../Commands/Mention/MentionAllCommand";
+import { MentionListCommand } from "../Commands/Mention/MentionList";
+import { MentionCreateCommand } from "../Commands/Mention/MentionCreate";
+import { MentionAddCommand } from "../Commands/Mention/MentionAdd";
 import { Format } from "../Bot/Format";
 
 export class CommandManager {
