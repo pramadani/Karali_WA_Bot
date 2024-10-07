@@ -1,14 +1,14 @@
 import { Message } from "whatsapp-web.js";
-import { CommandManager } from "./CommandManager";
-import { MentionAllCommand } from "../Commands/Mention/MentionAllCommand";
-import { Format } from "../Bot/Format";
-import { MentionManager } from "./MentionManager";
+import { CommandManager } from "./Managers/CommandManager";
+import { Format } from "../Commands/Models/Format";
+import { MentionManager } from "./Managers/MentionManager";
+import { Config } from "../Bot/Config";
 
 export class MessageHandler {
     private commandManager = new CommandManager();
     private mentionManager = new MentionManager();
-    private mention: string = "@";
-    private prefix: string = ".";
+    private mention: string = Config.TAG_SEPARATOR;
+    private prefix: string = Config.COMMAND_SEPARATOR;
 
     public handleMessage(message: Message): void {
         const isAtCommand = Format

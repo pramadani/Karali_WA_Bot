@@ -1,7 +1,8 @@
 import { Message } from "whatsapp-web.js";
-import { Format } from "../Bot/Format";
-import { MentionAllCommand } from "../Commands/Mention/MentionAllCommand";
-import { Mention } from "../Commands/Mention";
+import { Format } from "../../Commands/Models/Format";
+import { MentionAllCommand } from "../../Commands/MentionAllCommand";
+import { MentionCustomCommand } from "../../Commands/MentionCustomCommand";
+import { Config } from "../../Bot/Config";
 
 export class MentionManager {
 
@@ -12,16 +13,16 @@ export class MentionManager {
         .split(" ");
 
         const atCommands = parts
-        .filter(part => part.startsWith("@"))
+        .filter(part => part.startsWith(Config.TAG_SEPARATOR))
         .map(part => part.substring(1))
 
-        const containA = atCommands.find(command => command === "a");
+        const containA = atCommands.find(command => command === Config.TAG_ALL);
         if (containA) {
             new MentionAllCommand(message);
             return
         }
         if (atCommands.length > 0) {
-            new Mention(message);
+            new MentionCustomCommand(message);
             return
         }
     }

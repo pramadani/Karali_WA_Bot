@@ -1,35 +1,36 @@
-import { Format } from "../../Bot/Format";
-import { MentionCommand } from "./MentionCommand";
-import { Mention } from "./Models/Mention";
+import { Member } from "./Models/Member";
 import { MentionDb } from "./Models/MentionDb";
+import { MentionCommand } from "./Models/MentionCommand";
+import { Format } from "../Models/Format";
+import { Mention } from "./Models/Mention";
 
 export class MentionCreateCommand extends MentionCommand {
 
     protected async do(): Promise<void> {
         if (!await this.checkIsAdmin()) return;
         if (!await this.checkHasAnyParam()) return;
-        await this.mentionCreate();
+        await this.addMention();
     }
 
-    private async mentionCreate() {
-        const name = Format
+    private async addMention() {
+
+        const mentionName = Format
         .removeWhiteSpace(this.params[0])
         .split(' ')[0]
         .toLowerCase()
         
-        if (this.group!.isMentionExists(name)) {
-            await this.notifyReply("Error. nama mention sudah ada")
-            return
+        if (this.group?.isMentionExists(mentionName)) {
+            this.notifyReply("Error. Mention sudah ada.")
         }
 
-        const mention = new Mention(name);
+        const mention = new Mention(mentionName)
         this.group!.addMention(mention)
 
         const mentionDb = new MentionDb()
         mentionDb.groupName = this.group!.name;
-        mentionDb.mentionName = mention.name;
+        mentionDb.mentionName = mention?.name;
         mentionDb.save();
 
-        await this.notifyReply("Mention ditambahkan.")
+        await this.notifyReply("Mention ditambahkan.");
     }
 }

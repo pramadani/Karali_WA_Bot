@@ -1,5 +1,5 @@
-import { FormatMessage } from "../../Bot/FormatMessage";
-import { MentionCommand } from "./MentionCommand";
+import { FormatMessage } from "../Models/FormatMessage";
+import { MentionCommand } from "./Models/MentionCommand";
 
 export class MentionListCommand extends MentionCommand {
 

@@ -1,10 +1,11 @@
 import { GroupChat } from "whatsapp-web.js";
-import { Format } from "../Bot/Format";
-import { MentionCommand } from "./Mention/MentionCommand";
+import { Format } from "./Models/Format";
+import { MentionCommand } from "./Mention/Models/MentionCommand";
 import { mentionSystem } from "./Mention/Models/MentionSystem";
 import { Group } from "./Mention/Models/Group";
+import { Config } from "../Bot/Config";
 
-export class Mention extends MentionCommand{
+export class MentionCustomCommand extends MentionCommand{
     private tags: string[] | undefined;
 
     protected async do() {
@@ -25,7 +26,7 @@ export class Mention extends MentionCommand{
         );
 
         const mentionsArray = Array.from(mentionsSet);
-        const formattedText = mentionsArray.map(id => `@${id.replace("@c.us", "")}`).join(" ");
+        const formattedText = mentionsArray.map(id => `@${Format.removeServer(id)}`).join(" ");
 
         if (mentionsArray.length === 0) return;
     

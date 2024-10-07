@@ -8,6 +8,9 @@ services:
       - wwebjs_auth:/app/.wwebjs_auth
       - wwebjs_cache:/app/.wwebjs_cache
     command: npm run dev
+    depends_on:
+      - mention
+      - qr
 
   qr:
     build: 

@@ -1,7 +1,8 @@
 import { Chat, Message, MessageMedia, GroupChat } from "whatsapp-web.js";
-import { FormatMessage } from "../Bot/FormatMessage";
-import { messageCache } from "../MessageCache/MessageCache";
-import { Format } from "../Bot/Format";
+import { FormatMessage } from "./FormatMessage";
+import { messageCache } from "../../MessageCache/MessageCache";
+import { Format } from "./Format";
+import { Config } from "../../Bot/Config";
 
 export abstract class Command {
     protected message: Message;
@@ -10,11 +11,11 @@ export abstract class Command {
     protected groupChat: GroupChat | undefined;
     protected listMedia = messageCache.mediaMessages;
     protected params: string[] = [];
-    protected selfTag: string = "@me"
+    protected selfTag: string = `@${Config.TAG_SELF}`
 
     constructor(msg: Message) {
         this.message = msg;
-        this.params = Format.isIncludeParams(this.message.body) ? Format.getParams(this.message.body) : [];
+        this.params = Format.getParams(this.message.body);
         this.exec();
     }
 
@@ -81,11 +82,7 @@ export abstract class Command {
     }
 
     protected async notifyReply(text: string) {
-        await this.message.reply(this.notifyFormat(text));
-    }
-
-    protected notifyFormat(text: string) {
-        return FormatMessage.quote(FormatMessage.italic(text))
+        await this.message.reply(Format.notifyFormat(text));
     }
 
     protected async checkHasTag() {

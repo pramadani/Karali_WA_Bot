@@ -1,4 +1,4 @@
-import { Command } from "./Command";
+import { Command } from "./Models/Command";
 
 export class PingCommand extends Command {
 

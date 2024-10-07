@@ -1,6 +1,8 @@
 import { Client } from "whatsapp-web.js";
-import { Bot } from "../../Bot/Bot";
-import { Command } from "../Command";
+import { Bot } from "../Bot/Bot";
+import { Command } from "./Models/Command";
+import { Config } from "../Bot/Config";
+import { Format } from "./Models/Format";
 
 export class MentionAllCommand extends Command {
 
@@ -10,7 +12,7 @@ export class MentionAllCommand extends Command {
     }
 
     private async mentionGroupChat() {
-        const userId = this.message.author!.replace("@c.us", "");
+        const userId = Format.removeServer(this.message.author!);
         const client: Client = Bot.clientInstance;
 
         let text = "";

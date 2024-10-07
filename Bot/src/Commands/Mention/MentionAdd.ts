@@ -1,7 +1,8 @@
 import { Member } from "./Models/Member";
 import { MentionDb } from "./Models/MentionDb";
-import { MentionCommand } from "./MentionCommand";
-import { Format } from "../../Bot/Format";
+import { MentionCommand } from "./Models/MentionCommand";
+import { Format } from "../Models/Format";
+import { Mention } from "./Models/Mention";
 
 export class MentionAddCommand extends MentionCommand {
 
@@ -20,11 +21,11 @@ export class MentionAddCommand extends MentionCommand {
         .toLowerCase()
         
         if (!this.group?.isMentionExists(mentionName)) {
-            await this.notifyReply('Error. Nama mention belum ada.');
-            return
+            const mention = new Mention(mentionName);
+            this.group!.addMention(mention)
         }
 
-        const mention = this.group.getMention(mentionName)
+        const mention = this.group!.getMention(mentionName)
 
         if (this.checkHasSelfTag()) {
             const memberExists = mention!.isMemberExists(this.message.author!);
@@ -32,7 +33,7 @@ export class MentionAddCommand extends MentionCommand {
                 const member = new Member(this.message.author!);
                 mention!.addMember(member);
                 const mentionDb = new MentionDb()
-                mentionDb.groupName = this.group.name;
+                mentionDb.groupName = this.group!.name;
                 mentionDb.mentionName = mention!.name;
                 mentionDb.memberId = member.id;
                 mentionDb.save();
@@ -45,7 +46,7 @@ export class MentionAddCommand extends MentionCommand {
                 const member = new Member(String(mentionedId));
                 mention!.addMember(member);
                 const mentionDb = new MentionDb()
-                mentionDb.groupName = this.group.name;
+                mentionDb.groupName = this.group!.name;
                 mentionDb.mentionName = mention?.name;
                 mentionDb.memberId = member.id;
                 mentionDb.save();

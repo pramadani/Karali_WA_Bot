@@ -1,6 +1,6 @@
-import { Command } from "../Command";
-import { Group } from "./Models/Group";
-import { mentionSystem } from "./Models/MentionSystem";
+import { Command } from "../../Models/Command";
+import { Group } from "./Group";
+import { mentionSystem } from "./MentionSystem";
 
 export abstract class MentionCommand extends Command {
     protected group: Group | undefined;
