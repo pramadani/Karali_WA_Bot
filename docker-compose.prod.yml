@@ -11,6 +11,7 @@ services:
     depends_on:
       - mention
       - qr
+    restart: always
 
   qr:
     build: 
@@ -20,6 +21,7 @@ services:
     volumes:
       - ./QR:/app
     command: flask run --host=0.0.0.0
+    restart: always
 
   mention:
     build: 
@@ -27,11 +29,10 @@ services:
     volumes:
       - ./Mention:/app
       - node_modules_mention:/app/node_modules
-    ports:
-      - "5000:5000"
     command: npm run dev
     depends_on:
       - mentiondb
+    restart: always
 
   mentiondb:
     image: mysql:5.6-slim
@@ -42,16 +43,7 @@ services:
       MYSQL_PASSWORD: password
     volumes:
       - mention_db:/var/lib/mysql
-
-  mentiondbgui:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: mentiondb
-      MYSQL_ROOT_PASSWORD: rootpassword
-    ports:
-      - "8081:80"
-    depends_on:
-      - mentiondb
+    restart: always
 
 volumes:
   node_modules:
