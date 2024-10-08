@@ -1,9 +1,9 @@
 import { Message } from "whatsapp-web.js";
 import { PingCommand } from "../../Commands/PingCommand";
 import { StickerCommand } from "../../Commands/StickerCommand";
-import { MentionAllCommand } from "../../Commands/MentionAllCommand";
-import { Format } from "../../Commands/Models/Format";
-import { MentionSubCommand } from "../SubCommandManagers/MentionSubCommand";
+import { MentionAllCommand } from "../../Commands/MentionCommand/MentionAllCommand";
+import { Format } from "../../Commands/CommandModels/Format";
+import { MentionSubCommand } from "./MentionSubCommand";
 
 export class CommandManager {
     private commands: { [key: string]: (message: Message) => void } = {

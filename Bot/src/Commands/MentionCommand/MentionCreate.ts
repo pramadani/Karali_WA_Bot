@@ -1,7 +1,7 @@
 import { Member } from "./Models/Member";
 import { MentionDb } from "./Models/MentionDb";
 import { MentionCommand } from "./Models/MentionCommand";
-import { Format } from "../Models/Format";
+import { Format } from "../CommandModels/Format";
 import { Mention } from "./Models/Mention";
 
 export class MentionCreateCommand extends MentionCommand {

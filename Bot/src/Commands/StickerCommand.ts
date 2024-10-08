@@ -1,4 +1,4 @@
-import { Command } from "./Models/Command";
+import { Command } from "./CommandModels/Command";
 
 export class StickerCommand extends Command {
     private stickerName: string = '';

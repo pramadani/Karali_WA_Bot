@@ -1,9 +1,9 @@
 import { Message } from "whatsapp-web.js";
-import { Format } from "../../Commands/Models/Format";
-import { MentionListCommand } from "../../Commands/Mention/MentionList";
-import { MentionAddCommand } from "../../Commands/Mention/MentionAdd";
-import { Command } from "../../Commands/Models/Command";
-import { MentionCreateCommand } from "../../Commands/Mention/MentionCreate";
+import { Format } from "../../Commands/CommandModels/Format";
+import { MentionListCommand } from "../../Commands/MentionCommand/MentionList";
+import { MentionAddCommand } from "../../Commands/MentionCommand/MentionAdd";
+import { Command } from "../../Commands/CommandModels/Command";
+import { MentionCreateCommand } from "../../Commands/MentionCommand/MentionCreate";
 
 export class MentionSubCommand extends Command{
     private subCommand: string[] = []

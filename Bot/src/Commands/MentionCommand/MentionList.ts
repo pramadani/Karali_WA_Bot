@@ -1,4 +1,4 @@
-import { FormatMessage } from "../Models/FormatMessage";
+import { FormatMessage } from "../CommandModels/FormatMessage";
 import { MentionCommand } from "./Models/MentionCommand";
 
 export class MentionListCommand extends MentionCommand {

@@ -1,6 +1,6 @@
 import { Message } from "whatsapp-web.js";
 import { CommandManager } from "./Managers/CommandManager";
-import { Format } from "../Commands/Models/Format";
+import { Format } from "../Commands/CommandModels/Format";
 import { MentionManager } from "./Managers/MentionManager";
 import { Config } from "../Bot/Config";
 

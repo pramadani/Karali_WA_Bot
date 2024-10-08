@@ -1,7 +1,7 @@
 import { Message } from "whatsapp-web.js";
-import { Format } from "../../Commands/Models/Format";
-import { MentionAllCommand } from "../../Commands/MentionAllCommand";
-import { MentionCustomCommand } from "../../Commands/MentionCustomCommand";
+import { Format } from "../../Commands/CommandModels/Format";
+import { MentionAllCommand } from "../../Commands/MentionCommand/MentionAllCommand";
+import { MentionCustomCommand } from "../../Commands/MentionCommand/MentionCustomCommand";
 import { Config } from "../../Bot/Config";
 
 export class MentionManager {

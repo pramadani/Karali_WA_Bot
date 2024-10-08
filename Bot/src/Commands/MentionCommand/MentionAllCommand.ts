@@ -1,8 +1,8 @@
 import { Client } from "whatsapp-web.js";
-import { Bot } from "../Bot/Bot";
-import { Command } from "./Models/Command";
-import { Config } from "../Bot/Config";
-import { Format } from "./Models/Format";
+import { Bot } from "../../Bot/Bot";
+import { Command } from "../CommandModels/Command";
+import { Config } from "../../Bot/Config";
+import { Format } from "../CommandModels/Format";
 
 export class MentionAllCommand extends Command {
 

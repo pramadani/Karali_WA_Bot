@@ -1,9 +1,9 @@
 import { GroupChat } from "whatsapp-web.js";
-import { Format } from "./Models/Format";
-import { MentionCommand } from "./Mention/Models/MentionCommand";
-import { mentionSystem } from "./Mention/Models/MentionSystem";
-import { Group } from "./Mention/Models/Group";
-import { Config } from "../Bot/Config";
+import { Format } from "../CommandModels/Format";
+import { MentionCommand } from "./Models/MentionCommand";
+import { mentionSystem } from "./Models/MentionSystem";
+import { Group } from "./Models/Group";
+import { Config } from "../../Bot/Config";
 
 export class MentionCustomCommand extends MentionCommand{
     private tags: string[] | undefined;
