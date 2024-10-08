@@ -15,12 +15,6 @@ services:
   mention:
     build: 
       context: ./Mention
-    volumes:
-      - ./Mention:/app
-      - node_modules_mention:/app/node_modules
-    ports:
-      - "5000:5000"
-    command: npm run dev
     depends_on:
       - mentiondb
 
@@ -61,4 +55,3 @@ volumes:
   wwebjs_auth:
   wwebjs_cache:
   mention_db:
-  node_modules_mention:

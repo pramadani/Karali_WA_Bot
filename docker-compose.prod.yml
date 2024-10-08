@@ -10,26 +10,12 @@ services:
     command: npm run dev
     depends_on:
       - mention
-      - qr
-    restart: always
-
-  qr:
-    build: 
-      context: ./QR
-    ports:
-      - "5001:5000"
-    volumes:
-      - ./QR:/app
-    command: flask run --host=0.0.0.0
+      - qr-frontend
     restart: always
 
   mention:
     build: 
       context: ./Mention
-    volumes:
-      - ./Mention:/app
-      - node_modules_mention:/app/node_modules
-    command: npm run dev
     depends_on:
       - mentiondb
     restart: always
@@ -48,6 +34,7 @@ services:
   qr-backend:
     build: 
       context: ./Qr/Backend
+    restart: always
 
   qr-frontend:
     build: 
@@ -56,10 +43,10 @@ services:
       - "5001:80"
     depends_on:
       - qr-backend
+    restart: always
 
 volumes:
   node_modules:
   wwebjs_auth:
   wwebjs_cache:
   mention_db:
-  node_modules_mention:

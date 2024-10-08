@@ -12,8 +12,8 @@ function fetchQrData() {
             });
         })
         .catch(error => {
-            console.error('Error fetching QR data');
+            console.error('Error fetching QR data:', error);
         });
 }
 
-fetchQrData();
+setInterval(fetchQrData, 1000);
