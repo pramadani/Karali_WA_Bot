@@ -35,7 +35,7 @@ services:
     restart: always
 
   mentiondb:
-    image: mysql:5.6-slim
+    image: mysql:5.6
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: mention
@@ -44,6 +44,18 @@ services:
     volumes:
       - mention_db:/var/lib/mysql
     restart: always
+
+  qr-backend:
+    build: 
+      context: ./Qr/Backend
+
+  qr-frontend:
+    build: 
+      context: ./Qr/Frontend
+    ports:
+      - "5001:80"
+    depends_on:
+      - qr-backend
 
 volumes:
   node_modules:

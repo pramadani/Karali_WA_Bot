@@ -10,16 +10,7 @@ services:
     command: npm run dev
     depends_on:
       - mention
-      - qr
-
-  qr:
-    build: 
-      context: ./QR
-    ports:
-      - "5001:5000"
-    volumes:
-      - ./QR:/app
-    command: flask run --host=0.0.0.0
+      - qr-frontend
 
   mention:
     build: 
@@ -34,7 +25,7 @@ services:
       - mentiondb
 
   mentiondb:
-    image: mysql:5.6-slim
+    image: mysql:5.6
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: mention
@@ -43,15 +34,27 @@ services:
     volumes:
       - mention_db:/var/lib/mysql
 
-  mentiondbgui:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: mentiondb
-      MYSQL_ROOT_PASSWORD: rootpassword
+  # mentiondbgui:
+  #   image: phpmyadmin/phpmyadmin
+  #   environment:
+  #     PMA_HOST: mentiondb
+  #     MYSQL_ROOT_PASSWORD: rootpassword
+  #   ports:
+  #     - "8081:80"
+  #   depends_on:
+  #     - mentiondb
+
+  qr-backend:
+    build: 
+      context: ./Qr/Backend
+
+  qr-frontend:
+    build: 
+      context: ./Qr/Frontend
     ports:
-      - "8081:80"
+      - "5001:80"
     depends_on:
-      - mentiondb
+      - qr-backend
 
 volumes:
   node_modules:

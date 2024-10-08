@@ -1,9 +1,8 @@
-// QrHandler.ts
 import axios from 'axios';
 import qrcode from 'qrcode-terminal';
 
 export class QrHandler {
-    private qrPath: string = 'http://qr:5000/qr';
+    private qrPath: string = 'http://qr-backend:3000/qr';
 
     public async sendQr(qr: string): Promise<void> {
         this.generateQrCode(qr);
@@ -15,13 +14,13 @@ export class QrHandler {
     }
 
     private async sendQrData(qr: string): Promise<void> {
-        const data = { qr_data: qr };
-
         try {
-            await axios.post(this.qrPath, data);
+            await axios.post(this.qrPath, qr, {
+                headers: { 'Content-Type': 'text/plain' }
+            });
             console.log('QR dikirim');
         } catch (error) {
-            console.error('Gagal mengirim QR', error);
+            console.error('Gagal mengirim QR');
         }
     }
 }
